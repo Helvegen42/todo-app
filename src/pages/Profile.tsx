@@ -1,14 +1,20 @@
 import { selectUser } from "../features/userSlice";
 import { useAppSelector } from "../hooks/tshooks";
 import TaskItem from "../components/TaskItem";
-import { FaQuestionCircle } from "react-icons/fa";
+import { FaQuestionCircle, FaSpinner } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { selectTodos } from "../features/todoSlice";
 
 const Profile = (): JSX.Element => {
-  const { name } = useAppSelector(selectUser);
-  //     const userTodos = currentUser.todos.map(
-  //       todoId => userSlice.allTodos.byId[todoId]
-  //     );
+  const user = useAppSelector(selectUser);
+  const todo = useAppSelector(selectTodos);
+
+  if (!user) return <FaSpinner />;
+
+  const { name } = user;
+  const userTodos = user.todos
+    .map((todoId) => todo.byId[todoId])
+    .filter((todo) => todo);
 
   return (
     <>
@@ -24,13 +30,17 @@ const Profile = (): JSX.Element => {
       <div className='tasks'>
         <div className='task-headings'>
           <div>Task</div>
-          <div>Status</div>
+
           <div>Description</div>
         </div>
-        {/* userTodos.map((todo)=>
-          <TaskItem/>
-        ) */}
-        <TaskItem />
+        {userTodos.map((todo) => (
+          <TaskItem
+            key={todo.id}
+            id={todo.id}
+            name={todo.name}
+            description={todo.description}
+          />
+        ))}
       </div>
     </>
   );

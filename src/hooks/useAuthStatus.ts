@@ -6,16 +6,15 @@ const useAuthStatus = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [checkingStatus, setCheckingStatus] = useState(true);
 
-  const { id } = useAppSelector(selectUser);
-
+  const user = useAppSelector(selectUser);
   useEffect(() => {
-    if (id) {
+    if (user) {
       setLoggedIn(true);
     } else {
       setLoggedIn(false);
     }
     setCheckingStatus(false);
-  }, [id]);
+  }, [user]);
 
   return { loggedIn, checkingStatus };
 };

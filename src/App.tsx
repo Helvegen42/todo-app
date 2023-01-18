@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import { PrivateRoute } from "./components/PrivateRoute";
 import Header from "./components/Header";
 import Profile from "./pages/Profile";
-import Task from "./pages/Task";
+import EditTodo from "./pages/EditTodo";
 import NewTodo from "./pages/NewTodo";
 
 function App() {
@@ -18,11 +18,11 @@ function App() {
             <Route path='/profile' element={<PrivateRoute />}>
               <Route path='/profile' element={<Profile />} />
             </Route>
-            <Route path='/task/:task.id' element={<PrivateRoute />}>
-              <Route path='/task/:task.id' element={<Task />} />
-            </Route>
             <Route path='/new-todo' element={<PrivateRoute />}>
               <Route path='/new-todo' element={<NewTodo />} />
+            </Route>
+            <Route path='/edit-todo' element={<PrivateRoute />}>
+              <Route path='/edit-todo/:todoId' element={<EditTodo />} />
             </Route>
           </Routes>
         </div>

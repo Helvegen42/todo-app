@@ -3,15 +3,15 @@ import { FaGoogle } from "react-icons/fa";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { provider, auth } from "../firebase.config";
 import { useAppDispatch, useAppSelector } from "../hooks/tshooks";
-import { selectUser, setUser } from "../features/userSlice";
+import { selectUser, login } from "../features/userSlice";
 import { toast } from "react-toastify";
 
 const Home = (): JSX.Element => {
   const navigate = useNavigate();
   const appDispatch = useAppDispatch();
-  const { todos } = useAppSelector(selectUser);
+  const user = useAppSelector(selectUser);
 
-  const onGoogleClick = async () => {
+  const onGoogleClick = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
@@ -21,14 +21,15 @@ const Home = (): JSX.Element => {
         const user = result.user;
         const { uid: id, displayName: name, email } = user;
 
+        if (!name || !email)
+          throw new Error("Something wrong with name or email");
+
         // ...
         appDispatch(
-          setUser({
-            currentUser: { id, name, email, todos },
-            allUsers: {
-              byId: { id: { id, name, email, todos } },
-              allIds: [id],
-            },
+          login({
+            id,
+            name,
+            email,
           })
         );
 
@@ -46,14 +47,13 @@ const Home = (): JSX.Element => {
         toast(errorMessage);
       });
   };
-  const { id } = useAppSelector(selectUser);
 
   return (
     <>
       <section className='heading'>
         <h1>Don't get in trouble - just write all stuff down! </h1>
       </section>
-      {id ? (
+      {user ? (
         ""
       ) : (
         <>

@@ -1,32 +1,35 @@
-import { useAppDispatch, useAppSelector } from "../hooks/tshooks";
-import { addTodo } from "../features/todoSlice";
+import { useAppDispatch } from "../hooks/tshooks";
+import { updateTodo } from "../features/todoSlice";
 import BackButton from "../components/BackButton";
 import { useState } from "react";
-import uuid from "react-uuid";
-import { addTodoToUser } from "../features/userSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
-const NewTodo = (): JSX.Element => {
+const EditTodo = (): JSX.Element => {
   const appDispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [taskName, setTaskName] = useState("");
-  const [description, setDescription] = useState("");
+  const {
+    state: { id },
+  } = useLocation();
+  const [taskName, setTaskName] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Get the value of the todo item from the form
-    const todo = { id: uuid(), name: taskName, description: description };
+    const todo = { id, name: taskName, description: description };
     // Dispatch a Redux action to add the todo item to the store
-    appDispatch(addTodo(todo));
-    appDispatch(addTodoToUser(todo));
+    appDispatch(updateTodo(todo));
     navigate("/profile");
   };
   return (
     <>
       <BackButton url={"/profile"} />
       <section className='heading'>
-        <h1>Create New Task</h1>
+        <h1>Edit Task</h1>
       </section>
       <form onSubmit={handleSubmit}>
+        <div className='form-group'>
+          <label>Todo ID: {id}</label>
+        </div>
         <div className='form-group'>
           <label htmlFor='taskName'>Name or short thesis</label>
           <textarea
@@ -57,7 +60,7 @@ const NewTodo = (): JSX.Element => {
         </div>
         <div className='form-group'>
           <button className='btn btn-block' type='submit'>
-            Add Todo
+            Submit Changes
           </button>
         </div>
       </form>
@@ -65,4 +68,4 @@ const NewTodo = (): JSX.Element => {
   );
 };
 
-export default NewTodo;
+export default EditTodo;
